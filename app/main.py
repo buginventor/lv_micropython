@@ -215,22 +215,22 @@ class PageTest:
     def __init__(self, app, page):
         self.app = app
         self.page = page
+
         self.page.set_flex_flow(lv.FLEX_FLOW.ROW)
         self.page.set_flex_align(lv.FLEX_ALIGN.SPACE_EVENLY, lv.FLEX_ALIGN.CENTER, lv.FLEX_ALIGN.START)
-        self._initialize_buttons()
 
-    def _initialize_buttons(self):
-        self.counter_btn = lv.btn(self.page)
-        self.counter_btn.set_size(80, 80)
-        self.counter_label = lv.label(self.counter_btn)
-        self.counter_label.set_text("Count")
-        self.counter_label.align(lv.ALIGN.CENTER, 0, 0)
-        self.counter_btn.add_event_cb(self.on_counter_btn, lv.EVENT.CLICKED, None)
-        self.counter = 0
+        self.btn1 = SymbolButton(page, lv.SYMBOL.PLAY, "Play")
+        self.btn1.set_size(80, 80)
+        self.btn2 = SymbolButton(page, lv.SYMBOL.PAUSE, "Pause")
+        self.btn2.set_size(80, 80)
+        self.btn3 = SymbolButton(page, lv.SYMBOL.PLAY, "Play")
+        self.btn3.set_size(80, 80)
+        self.btn4 = SymbolButton(page, lv.SYMBOL.PAUSE, "Pause")
+        self.btn4.set_size(80, 80)
 
-    def on_counter_btn(self, event):
-        self.counter += 1
-        self.counter_label.set_text(str(self.counter))
+        self.label = lv.label(page)
+        self.label.add_flag(lv.obj.FLAG.IGNORE_LAYOUT)
+        self.label.align(lv.ALIGN.BOTTOM_LEFT, 0, 0)
 
 
 class Screen_Main(lv.obj):

@@ -232,92 +232,6 @@ class PageTest:
         self.counter += 1
         self.counter_label.set_text(str(self.counter))
 
-class Anim(lv.anim_t):
-    def __init__(self, obj, val, size, exec_cb, path_cb, time=500, playback=False, ready_cb=None):
-        super().__init__()
-        self.init()
-        self.set_time(time)
-        self.set_values(val, val + size)
-        if callable(exec_cb):
-            self.set_custom_exec_cb(exec_cb)
-        else:
-            self.set_exec_cb(obj, exec_cb)
-        self.set_path_cb(path_cb)
-        if playback:
-            self.set_playback(0)
-        if ready_cb:
-            self.set_ready_cb(ready_cb)
-        self.start()
-
-
-class AnimatedChart(lv.chart):
-    def __init__(self, parent, val, size):
-        super().__init__(parent)
-        self.val = val
-        self.size = size
-        self.max = 2000
-        self.min = 500
-        self.factor = 100
-        self.anim_phase1()
-
-    def anim_phase1(self):
-        self.phase1 = Anim(
-            self,
-            self.val,
-            self.size,
-            lambda a, val: self.set_range(self.AXIS.PRIMARY_Y, 0, val),
-            lv.anim_t.path_ease_in,
-            ready_cb=lambda a: self.anim_phase2(),
-            time=(self.max * self.factor) // 100,
-        )
-
-    def anim_phase2(self):
-        self.phase2 = Anim(
-            self,
-            self.val + self.size,
-            -self.size,
-            lambda a, val: self.set_range(self.AXIS.PRIMARY_Y, 0, val),
-            lv.anim_t.path_ease_out,
-            ready_cb=lambda a: self.anim_phase1(),
-            time=(self.min * self.factor) // 100,
-        )
-
-
-class Page_Chart:
-    def __init__(self, app, page):
-        self.app = app
-        self.page = page
-        self.page.set_flex_flow(lv.FLEX_FLOW.ROW)
-        self.page.set_flex_align(lv.FLEX_ALIGN.SPACE_EVENLY, lv.FLEX_ALIGN.CENTER, lv.FLEX_ALIGN.CENTER)
-        self.page.set_style_pad_all(10, lv.PART.MAIN)
-        self.page.set_style_pad_gap(10, lv.PART.MAIN)
-        self.chart = AnimatedChart(page, 100, 1000)
-        self.chart.set_flex_grow(1)
-        self.chart.set_height(lv.pct(100))
-        self.series1 = self.chart.add_series(lv.color_hex(0xFF0000), self.chart.AXIS.PRIMARY_Y)
-        self.chart.set_type(self.chart.TYPE.LINE)
-        self.chart.set_style_line_width(3, lv.PART.ITEMS)
-        self.chart.add_style(ColorStyle(0x055), lv.PART.ITEMS)
-        self.chart.set_range(self.chart.AXIS.PRIMARY_Y, 0, 100)
-        self.chart.set_point_count(10)
-        self.chart.set_ext_y_array(self.series1, [10, 20, 30, 20, 10, 40, 50, 90, 95, 90])
-        # self.chart.set_x_tick_texts("a\nb\nc\nd\ne", 2, lv.chart.AXIS.DRAW_LAST_TICK)
-        # self.chart.set_x_tick_length(10, 5)
-        # self.chart.set_y_tick_texts("1\n2\n3\n4\n5", 2, lv.chart.AXIS.DRAW_LAST_TICK)
-        # self.chart.set_y_tick_length(10, 5)
-        self.chart.set_div_line_count(5, 5)
-
-        # Create a slider that controls the chart animation speed
-
-        def on_slider_changed(event):
-            self.chart.factor = self.slider.get_value()
-
-        self.slider = lv.slider(page)
-        self.slider.set_size(10, lv.pct(100))
-        self.slider.set_range(10, 200)
-        self.slider.set_value(self.chart.factor, 0)
-        self.slider.add_event_cb(on_slider_changed, lv.EVENT.VALUE_CHANGED, None)
-
 
 class Screen_Main(lv.obj):
     def __init__(self, app, *args, **kwds):
@@ -328,7 +242,6 @@ class Screen_Main(lv.obj):
         self.page_test = PageTest(self.app, self.tabview.add_tab('Test'))
         self.page_simple = Page_Simple(self.app, self.tabview.add_tab("Simple"))
         self.page_buttons = Page_Buttons(self.app, self.tabview.add_tab("Buttons"))
-        self.page_chart = Page_Chart(self.app, self.tabview.add_tab("Chart"))
 
 
 class AdvancedDemoApplication:

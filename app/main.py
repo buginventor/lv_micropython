@@ -245,61 +245,6 @@ class Screen_Main(lv.obj):
 
 
 class AdvancedDemoApplication:
-    def init_gui_SDL(self):
-
-        import SDL
-
-        SDL.init(auto_refresh=False)
-        self.event_loop = event_loop(refresh_cb=SDL.refresh)
-
-        # Register SDL display driver.
-
-        disp_buf1 = lv.disp_draw_buf_t()
-        buf1_1 = bytes(480 * 10)
-        disp_buf1.init(buf1_1, None, len(buf1_1) // 4)
-        disp_drv = lv.disp_drv_t()
-        disp_drv.init()
-        disp_drv.draw_buf = disp_buf1
-        disp_drv.flush_cb = SDL.monitor_flush
-        disp_drv.hor_res = 480
-        disp_drv.ver_res = 320
-        disp_drv.register()
-
-        # Regsiter SDL mouse driver
-
-        indev_drv = lv.indev_drv_t()
-        indev_drv.init()
-        indev_drv.type = lv.INDEV_TYPE.POINTER
-        indev_drv.read_cb = SDL.mouse_read
-        indev_drv.register()
-
-    def init_gui_esp32(self):
-
-        # Initialize ILI9341 display
-
-        from ili9XXX import ili9341
-
-        self.disp = ili9341(dc=32, cs=33, power=-1, backlight=-1)
-
-        # Register raw resistive touch driver
-
-        """
-        import rtch
-        self.touch = rtch.touch(xp = 32, yp = 33, xm = 25, ym = 26, touch_rail = 27, touch_sense = 33)
-        self.touch.init()
-        indev_drv = lv.indev_drv_t()
-        lv.indev_drv_init(indev_drv) 
-        indev_drv.type = lv.INDEV_TYPE.POINTER
-        indev_drv.read_cb = self.touch.read
-        lv.indev_drv_register(indev_drv)
-        """
-
-        # Register xpt2046 touch driver
-
-        from xpt2046 import xpt2046
-
-        self.touch = xpt2046()
-
     def init_gui_stm32(self):
         import rk043fn48h as lcd
 
